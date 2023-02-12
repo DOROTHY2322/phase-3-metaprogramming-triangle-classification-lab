@@ -1,17 +1,24 @@
+
+# lib/triangle.rb
+
 class Triangle
-  class TriangleError < StandardError
+  attr_reader :sides
+
+  def initialize(side1, side2, side3)
+    @sides = [side1, side2, side3].sort
+    raise TriangleError if @sides.any? { |s| s <= 0 }
+    raise TriangleError unless @sides[0] + @sides[1] > @sides[2]
   end
-  
-  def initialize(a,b,c)
-    @sides = [a,b,c].sort
-    raise TriangleError if @sides.any?(&:zero?) || @sides.any?(&:negative?)
-    raise TriangleError if @sides[0] + @sides[1] <= @sides[2]
-  end
-  
+
   def kind
-    return :equilateral if @sides.uniq.length == 1
-    return :isosceles if @sides.uniq.length == 2
-    return :scalene if @sides.uniq.length == 3
+    case @sides.uniq.size
+    when 1 then :equilateral
+    when 2 then :isosceles
+    else        :scalene
+    end
+  end
+
+  class TriangleError < StandardError
+    # triangle error code
   end
 end
-
